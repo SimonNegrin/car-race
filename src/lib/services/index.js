@@ -1,3 +1,8 @@
-import Orientation from './Orientation'
+import { readable } from 'svelte/store'
 
-export const orientation = new Orientation()
+const orientationEvent = 'orientationchange'
+
+export const orientation = readable(null, set => {
+  window.addEventListener(orientationEvent, set)
+  return () => window.removeEventListener(orientationEvent, set)
+})

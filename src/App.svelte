@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte'
   import Screen from './lib/Screen.svelte'
 
   let isFullScreen = false
