@@ -3,13 +3,12 @@
 
   let isFullScreen = false
 
-  function toggleFullScreen() {
+  async function toggleFullScreen() {
     if (isFullScreen) {
-      document.exitFullscreen()
+      await document.exitFullscreen()
     } else {
-      document.documentElement.requestFullscreen().then(() => {
-        window.screen.orientation.lock('landscape')
-      })
+      await document.documentElement.requestFullscreen()
+      window.screen.orientation.lock('landscape')
     }
     isFullScreen = !isFullScreen
   }
