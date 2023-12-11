@@ -1,6 +1,6 @@
 import { readable } from 'svelte/store'
 
-const orientationEvent = 'orientationchange'
+const orientationEvent = 'deviceorientation'
 
 export const orientation = readable(null, set => {
   window.addEventListener(orientationEvent, set)
