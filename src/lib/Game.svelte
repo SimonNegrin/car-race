@@ -7,7 +7,6 @@
   let width = 1024 // logical canvas width
   let height = 768 // logical canvas height
   let centrifugal = 0.3 // centrifugal force multiplier when going around curves
-  // let offRoadDecel   = 0.99;                    // speed multiplier when off road (e.g. you lose 2% speed each update frame)
   let skySpeed = 0.001 // background sky layer scroll speed when going around curve (or up hill)
   let hillSpeed = 0.002 // background hill layer scroll speed when going around curve (or up hill)
   let treeSpeed = 0.003 // background tree layer scroll speed when going around curve (or up hill)
@@ -51,12 +50,7 @@
   export let keyFaster = false
   export let keySlower = false
 
-  let hud = {
-    speed: { value: null, dom: Dom.get("speed_value") },
-    current_lap_time: { value: null, dom: Dom.get("current_lap_time_value") },
-    last_lap_time: { value: null, dom: Dom.get("last_lap_time_value") },
-    fast_lap_time: { value: null, dom: Dom.get("fast_lap_time_value") },
-  }
+  let hud
 
   //=========================================================================
   // UPDATE THE GAME WORLD
@@ -238,10 +232,14 @@
 
   function updateHud(key, value) {
     // accessing DOM can be slow, so only do it if value has changed
-    // if (hud[key].value !== value) {
-    //   hud[key].value = value
-    //   Dom.set(hud[key].dom, value)
-    // }
+    if (!hud[key].dom) {
+      console.log({ key })
+      return
+    }
+    if (hud[key].value !== value) {
+      hud[key].value = value
+      Dom.set(hud[key].dom, value)
+    }
   }
 
   function formatTime(dt) {
@@ -698,18 +696,18 @@
     }
   }
 
-  function keyLeftDown() {
-    keyLeft = true
-  }
-
-  function keyLeftUp() {
-    keyLeft = false
-  }
-
   //=========================================================================
   // THE GAME LOOP
   //=========================================================================
   onMount(() => {
+
+    hud = {
+      speed: { value: null, dom: Dom.get("speed_value") },
+      current_lap_time: { value: null, dom: Dom.get("current_lap_time_value") },
+      last_lap_time: { value: null, dom: Dom.get("last_lap_time_value") },
+      fast_lap_time: { value: null, dom: Dom.get("fast_lap_time_value") },
+    }
+
     canvas = Dom.get("canvas")
     ctx = canvas.getContext("2d")
 
@@ -841,7 +839,6 @@
   <source src="music/racer.ogg" />
   <source src="music/racer.mp3" />
 </audio>
-<span id="mute"></span>
 
 <style>
   #racer {
@@ -849,7 +846,6 @@
     z-index: 0;
     width: 100%;
     height: 100%;
-    border: 2px solid black;
   }
   #canvas {
     position: absolute;
@@ -861,19 +857,6 @@
     z-index: 0;
     background-color: #72d7ee;
   }
-  #mute {
-    background-position: 0px 0px;
-    width: 32px;
-    height: 32px;
-    background: url(images/mute.png);
-    display: inline-block;
-    cursor: pointer;
-    position: absolute;
-    margin-left: 20em;
-  }
-  #mute.on {
-    background-position: -32px 0px;
-  }
 
   /**************************************************/
   /* rudimentary heads up display (only used in v4) */
@@ -881,14 +864,15 @@
 
   #hud {
     position: absolute;
+    display: flex;
+    justify-content: space-between;
     z-index: 1;
-    width: 640px;
+    width: calc(100% - 20rem);
+    left: 10rem;
     padding: 5px 0;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 0.8em;
-    background-color: rgba(255, 0, 0, 0.4);
     color: black;
-    border-bottom: 2px solid black;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -896,7 +880,6 @@
   #hud .hud {
     background-color: rgba(255, 255, 255, 0.6);
     padding: 5px;
-    border: 1px solid black;
     margin: 0 5px;
     transition-property: background-color;
     transition-duration: 2s;
@@ -927,10 +910,4 @@
     color: black;
     font-weight: bold;
   }
-  #hud .fastest {
-    background-color: rgba(255, 215, 0, 0.5);
-  }
-
-
-
 </style>
