@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte"
   import { Dom, Game, Util, Render, SPRITES, BACKGROUND, COLORS, KEY } from './services/common'
+  import Speed from './Speed.svelte'
 
+  const mileToKm = 1.609344
   let index
   let fps = 60 // how many 'update' frames per second
   let step = 1 / fps // how long is each frame (in seconds)
@@ -51,6 +53,7 @@
   export let keySlower = false
 
   let hud
+  let kmh = 0
 
   //=========================================================================
   // UPDATE THE GAME WORLD
@@ -157,8 +160,7 @@
         currentLapTime += dt
       }
     }
-
-    updateHud("speed", 5 * Math.round(speed / 500))
+    kmh = 5 * Math.round(speed / 500) * mileToKm
     updateHud("current_lap_time", formatTime(currentLapTime))
   }
 
@@ -234,10 +236,6 @@
 
   function updateHud(key, value) {
     // accessing DOM can be slow, so only do it if value has changed
-    if (!hud[key].dom) {
-      console.log({ key })
-      return
-    }
     if (hud[key].value !== value) {
       hud[key].value = value
       Dom.set(hud[key].dom, value)
@@ -684,7 +682,7 @@
   function resetCars() {
     cars = []
     // @ts-ignore
-    let n, car, segment, offset, z, sprite, speed
+    let car, segment, offset, z, sprite, speed
     for (let n = 0; n < totalCars; n++) {
       offset = Math.random() * Util.randomChoice([-0.8, 0.8])
       z = Math.floor(Math.random() * segments.length) * segmentLength
@@ -818,9 +816,7 @@
 <div id="racer">
 
   <div id="hud">
-    <span id="speed" class="hud"
-      ><span id="speed_value" class="value">0</span> mph</span
-    >
+    <Speed speed={kmh} />
     <span id="current_lap_time" class="hud"
       >Time: <span id="current_lap_time_value" class="value">0.0</span></span
     >
