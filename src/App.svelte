@@ -8,6 +8,7 @@
       await document.exitFullscreen()
     } else {
       await document.documentElement.requestFullscreen()
+      // @ts-ignore
       window.screen.orientation.lock('landscape')
     }
     isFullScreen = !isFullScreen

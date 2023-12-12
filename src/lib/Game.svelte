@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte"
+  import { Dom, Game, Util, Render, SPRITES, BACKGROUND, COLORS, KEY } from './services/common'
 
   let index
   let fps = 60 // how many 'update' frames per second
@@ -15,7 +16,6 @@
   let treeOffset = 0 // current tree scroll offset
   let segments = [] // array of road segments
   let cars = [] // array of cars on the road
-  let stats = Game.stats("fps") // mr.doobs FPS counter
   let canvas // our canvas...
   let ctx // ...and its drawing context
   let background = null // our background image (loaded below)
@@ -140,7 +140,9 @@
       if (currentLapTime && startPosition < playerZ) {
         lastLapTime = currentLapTime
         currentLapTime = 0
+        // @ts-ignore
         if (lastLapTime <= Util.toFloat(Dom.storage.fast_lap_time)) {
+          // @ts-ignore
           Dom.storage.fast_lap_time = lastLapTime
           updateHud("fast_lap_time", formatTime(lastLapTime))
           Dom.addClassName("fast_lap_time", "fastest")
@@ -681,6 +683,7 @@
 
   function resetCars() {
     cars = []
+    // @ts-ignore
     let n, car, segment, offset, z, sprite, speed
     for (let n = 0; n < totalCars; n++) {
       offset = Math.random() * Util.randomChoice([-0.8, 0.8])
@@ -715,7 +718,6 @@
       canvas: canvas,
       render: render,
       update: update,
-      stats: stats,
       step: step,
       images: ["background", "sprites"],
       keys: [
@@ -780,9 +782,11 @@
         background = images[0]
         sprites = images[1]
         reset()
+        // @ts-ignore
         Dom.storage.fast_lap_time = Dom.storage.fast_lap_time || 180
         updateHud(
           "fast_lap_time",
+          // @ts-ignore
           formatTime(Util.toFloat(Dom.storage.fast_lap_time))
         )
       },

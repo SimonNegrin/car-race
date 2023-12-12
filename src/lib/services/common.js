@@ -2,7 +2,7 @@
 // minimalist DOM helpers
 //=========================================================================
 
-var Dom = {
+export var Dom = {
 
   get:  function(id)                     { return ((id instanceof HTMLElement) || (id === document)) ? id : document.getElementById(id); },
   set:  function(id, html)               { Dom.get(id).innerHTML = html;                        },
@@ -33,7 +33,7 @@ var Dom = {
 // general purpose helpers (mostly math)
 //=========================================================================
 
-var Util = {
+export var Util = {
 
   timestamp:        function()                  { return new Date().getTime();                                    },
   toInt:            function(obj, def)          { if (obj !== null) { var x = parseInt(obj, 10); if (!isNaN(x)) return x; } return Util.toInt(def, 0); },
@@ -84,10 +84,15 @@ var Util = {
 //=========================================================================
 
 if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+  // @ts-ignore
   window.requestAnimationFrame = window.webkitRequestAnimationFrame || 
+                                 // @ts-ignore
                                  window.mozRequestAnimationFrame    || 
+                                 // @ts-ignore
                                  window.oRequestAnimationFrame      || 
+                                 // @ts-ignore
                                  window.msRequestAnimationFrame     || 
+                                 // @ts-ignore
                                  function(callback, element) {
                                    window.setTimeout(callback, 1000 / 60);
                                  }
@@ -97,7 +102,7 @@ if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimati
 // GAME LOOP helpers
 //=========================================================================
 
-var Game = {  // a modified version of the game loop from my previous boulderdash game - see http://codeincomplete.com/posts/2011/10/25/javascript_boulderdash/#gameloop
+export var Game = {  // a modified version of the game loop from my previous boulderdash game - see http://codeincomplete.com/posts/2011/10/25/javascript_boulderdash/#gameloop
 
   run: function(options) {
 
@@ -107,11 +112,11 @@ var Game = {  // a modified version of the game loop from my previous boulderdas
 
       Game.setKeyListener(options.keys);
 
+      // @ts-ignore
       var canvas = options.canvas,    // canvas render target is provided by caller
           update = options.update,    // method to update game logic is provided by caller
           render = options.render,    // method to render the game is provided by caller
           step   = options.step,      // fixed frame step (1/fps) is specified by caller
-          stats  = options.stats,     // stats instance is provided by caller
           now    = null,
           last   = Util.timestamp(),
           dt     = 0,
@@ -126,9 +131,8 @@ var Game = {  // a modified version of the game loop from my previous boulderdas
           update(step);
         }
         render();
-        // stats.update();
         last = now;
-        requestAnimationFrame(frame, canvas);
+        requestAnimationFrame(frame);
       }
       frame(); // lets get this party started
       Game.playMusic();
@@ -175,32 +179,6 @@ var Game = {  // a modified version of the game loop from my previous boulderdas
 
   //---------------------------------------------------------------------------
 
-  stats: function(parentId, id) { // construct mr.doobs FPS counter - along with friendly good/bad/ok message box
-
-    // var result = new Stats();
-    // result.domElement.id = id || 'stats';
-    // Dom.get(parentId).appendChild(result.domElement);
-
-    // var msg = document.createElement('div');
-    // msg.style.cssText = "border: 2px solid gray; padding: 5px; margin-top: 5px; text-align: left; font-size: 1.15em; text-align: right;";
-    // msg.innerHTML = "Your canvas performance is ";
-    // Dom.get(parentId).appendChild(msg);
-
-    // var value = document.createElement('span');
-    // value.innerHTML = "...";
-    // msg.appendChild(value);
-
-    // setInterval(function() {
-    //   var fps   = result.current();
-    //   var ok    = (fps > 50) ? 'good'  : (fps < 30) ? 'bad' : 'ok';
-    //   var color = (fps > 50) ? 'green' : (fps < 30) ? 'red' : 'gray';
-    //   value.innerHTML       = ok;
-    //   value.style.color     = color;
-    //   msg.style.borderColor = color;
-    // }, 5000);
-    // return result;
-  },
-
   //---------------------------------------------------------------------------
 
   playMusic: function() {
@@ -222,7 +200,7 @@ var Game = {  // a modified version of the game loop from my previous boulderdas
 // canvas rendering helpers
 //=========================================================================
 
-var Render = {
+export var Render = {
 
   polygon: function(ctx, x1, y1, x2, y2, x3, y3, x4, y4, color) {
     ctx.fillStyle = color;
@@ -291,6 +269,7 @@ var Render = {
 
   //---------------------------------------------------------------------------
 
+  // @ts-ignore
   sprite: function(ctx, width, height, resolution, roadWidth, sprites, sprite, scale, destX, destY, offsetX, offsetY, clipY) {
 
                     //  scale for projection AND relative to roadWidth (for tweakUI)
@@ -342,7 +321,7 @@ var Render = {
 // RACING GAME CONSTANTS
 //=============================================================================
 
-var KEY = {
+export var KEY = {
   LEFT:  37,
   UP:    38,
   RIGHT: 39,
@@ -353,7 +332,7 @@ var KEY = {
   W:     87
 };
 
-var COLORS = {
+export var COLORS = {
   SKY:  '#72D7EE',
   TREE: '#005108',
   FOG:  '#005108',
@@ -363,13 +342,13 @@ var COLORS = {
   FINISH: { road: 'black',   grass: 'black',   rumble: 'black'                     }
 };
 
-var BACKGROUND = {
+export var BACKGROUND = {
   HILLS: { x:   5, y:   5, w: 1280, h: 480 },
   SKY:   { x:   5, y: 495, w: 1280, h: 480 },
   TREES: { x:   5, y: 985, w: 1280, h: 480 }
 };
 
-var SPRITES = {
+export var SPRITES = {
   PALM_TREE:              { x:    5, y:    5, w:  215, h:  540 },
   BILLBOARD08:            { x:  230, y:    5, w:  385, h:  265 },
   TREE1:                  { x:  625, y:    5, w:  360, h:  360 },
