@@ -104,7 +104,18 @@ if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimati
 
 export var Game = {  // a modified version of the game loop from my previous boulderdash game - see http://codeincomplete.com/posts/2011/10/25/javascript_boulderdash/#gameloop
 
+  isRunning: false, // true if the loop is running
+
+  stop: function() { // start the loop
+    Game.isRunning = false;
+  },
+
   run: function(options) {
+    if (Game.isRunning) {
+      return;
+    }
+
+    Game.isRunning = true;
 
     Game.loadImages(options.images, function(images) {
 
@@ -123,6 +134,9 @@ export var Game = {  // a modified version of the game loop from my previous bou
           gdt    = 0;
 
       function frame() {
+        if (!Game.isRunning) {
+          return;
+        }
         now = Util.timestamp();
         dt  = Math.min(1, (now - last) / 1000); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
         gdt = gdt + dt;

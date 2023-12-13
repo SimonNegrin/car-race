@@ -789,6 +789,8 @@
         )
       },
     })
+
+    return () => Game.stop()
   })
 
   function reset(options) {
@@ -869,7 +871,7 @@
     z-index: 1;
     width: calc(100% - 20rem);
     left: 10rem;
-    padding: 5px 0;
+    padding: 8px;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 0.8em;
     color: black;
@@ -899,7 +901,6 @@
   #hud #fast_lap_time {
     display: block;
     width: 12em;
-    margin: 0 auto;
     text-align: center;
     transition-property: background-color;
     transition-duration: 2s;
